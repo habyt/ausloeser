@@ -7,8 +7,9 @@ function error(msg: string): never {
     throw new Error(msg)
 }
 
-async function main() {
+export async function run(): Promise<void> {
     try {
+        console.log(JSON.stringify(github))
         if (github.context.payload.pull_request === undefined) {
             return
         }
@@ -18,28 +19,30 @@ async function main() {
         const token = core.getInput("pat")
         const octokit = github.getOctokit(token)
 
-        //const issue = await octokit.issues.get({
-        //    owner:
-        //        payload.repository?.owner?.login ??
-        //        error("no repository owner found in payload"),
-        //    repo:
-        //        payload.repository?.name ??
-        //        error("no repository name found in payload"),
-        //    issue_number:
-        //        payload.issue?.number ??
-        //        error("no issue number found in payload"),
-        //})
+        const issue = await octokit.issues.get({
+            owner:
+                payload.repository?.owner?.login ??
+                error("no repository owner found in payload"),
+            repo:
+                payload.repository?.name ??
+                error("no repository name found in payload"),
+            issue_number:
+                payload.issue?.number ??
+                error("no issue number found in payload"),
+        })
 
-        //core.info(JSON.stringify(issue, null, 4))
+        core.info(JSON.stringify(issue, null, 4))
 
         core.info(JSON.stringify(payload, null, 4))
+
+        return
     } catch (e) {
         core.setFailed(e.message)
         core.setFailed(e)
     }
 }
 
-main().catch((e) => {
+run().catch((e) => {
     console.log(JSON.stringify(e))
     core.setFailed(JSON.stringify(e))
 })
