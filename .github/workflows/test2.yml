@@ -1,0 +1,7 @@
+on:
+  workflow_dispatch:
+    inputs:
+      comment:
+        default: ""
+      user:
+        default: ""

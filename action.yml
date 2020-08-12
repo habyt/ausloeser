@@ -4,6 +4,9 @@ inputs:
   pat:
     description: "Github access token"
     required: true
+  workflow:
+    description: "Workflow to trigger"
+    required: true
 runs:
   using: "node12"
   main: "dist/index.js"

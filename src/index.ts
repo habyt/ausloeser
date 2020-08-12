@@ -10,37 +10,63 @@ function error(msg: string): never {
 export async function run() {
     try {
         const payload = github.context.payload
-        console.log("hallo")
-        core.info("hallo")
-        core.debug("hallo")
-
-        core.info(JSON.stringify(payload, null, 4))
 
         if (payload.issue?.pull_request === undefined) {
-            core.info("hallo2")
+            core.info("No PR found in event. Ignoring.")
             return
         }
 
         const token = core.getInput("pat")
         const octokit = github.getOctokit(token)
 
-        core.info("hallo3")
+        const owner =
+            payload.repository?.owner?.login ??
+            error("no repository owner found in payload")
+        const repo =
+            payload.repository?.name ??
+            error("no repository name found in payload")
+
+        const pullNumber =
+            payload.issue?.number ?? error("no issue number found in payload")
+
         const issue = await octokit.pulls.get({
-            owner:
-                payload.repository?.owner?.login ??
-                error("no repository owner found in payload"),
-            repo:
-                payload.repository?.name ??
-                error("no repository name found in payload"),
-            pull_number:
-                payload.issue?.number ??
-                error("no issue number found in payload"),
+            owner,
+            repo,
+            pull_number: pullNumber,
         })
-        core.info("hallo4")
 
-        core.info(JSON.stringify(issue, null, 4))
+        let workflowId: number | undefined = undefined
+        let page = 0
+        while (true) {
+            const workflows = await octokit.actions.listRepoWorkflows({
+                owner,
+                repo,
+                page,
+                per_page: 50,
+            })
 
-        core.info(JSON.stringify(payload, null, 4))
+            console.log(JSON.stringify(workflows.data, null, 4))
+
+            if (workflows.data.workflows.length === 0) {
+                break
+            }
+
+            const workflow = workflows.data.workflows.find(
+                (it) => it.path === core.getInput("workflow")
+            )
+            if (workflow !== undefined) {
+                workflowId = workflow.id
+                break
+            }
+
+            page++
+        }
+
+        const pr = issue.data
+        const ref = pr.head.ref
+
+        console.log(ref)
+        console.log(workflowId)
 
         return
     } catch (e) {
