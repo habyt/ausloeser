@@ -25,14 +25,14 @@ export async function run() {
         const octokit = github.getOctokit(token)
 
         core.info("hallo3")
-        const issue = await octokit.issues.get({
+        const issue = await octokit.pulls.get({
             owner:
                 payload.repository?.owner?.login ??
                 error("no repository owner found in payload"),
             repo:
                 payload.repository?.name ??
                 error("no repository name found in payload"),
-            issue_number:
+            pull_number:
                 payload.issue?.number ??
                 error("no issue number found in payload"),
         })
