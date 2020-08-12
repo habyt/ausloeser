@@ -30,25 +30,32 @@ async function run() {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
     try {
         const payload = github.context.payload;
-        if (((_a = payload.issue) === null || _a === void 0 ? void 0 : _a.pull_request) === undefined) {
+        const token = core.getInput("pat");
+        const octokit = github.getOctokit(token);
+        console.log(JSON.stringify(payload, null, 4));
+        const owner = (_c = (_b = (_a = payload.repository) === null || _a === void 0 ? void 0 : _a.owner) === null || _b === void 0 ? void 0 : _b.login) !== null && _c !== void 0 ? _c : error("no repository owner found in payload");
+        const repo = (_e = (_d = payload.repository) === null || _d === void 0 ? void 0 : _d.name) !== null && _e !== void 0 ? _e : error("no repository name found in payload");
+        const commentId = (_f = payload.comment) === null || _f === void 0 ? void 0 : _f.id;
+        if (commentId === undefined) {
+            return;
+        }
+        if (((_g = payload.issue) === null || _g === void 0 ? void 0 : _g.pull_request) === undefined) {
             core.info("No PR found in event. Ignoring.");
             return;
         }
-        const token = core.getInput("pat");
-        const octokit = github.getOctokit(token);
-        const owner = (_d = (_c = (_b = payload.repository) === null || _b === void 0 ? void 0 : _b.owner) === null || _c === void 0 ? void 0 : _c.login) !== null && _d !== void 0 ? _d : error("no repository owner found in payload");
-        const repo = (_f = (_e = payload.repository) === null || _e === void 0 ? void 0 : _e.name) !== null && _f !== void 0 ? _f : error("no repository name found in payload");
-        const pullNumber = (_h = (_g = payload.issue) === null || _g === void 0 ? void 0 : _g.number) !== null && _h !== void 0 ? _h : error("no issue number found in payload");
+        await octokit.reactions.createForIssueComment({
+            owner,
+            repo,
+            comment_id: commentId,
+            content: "eyes",
+        });
+        const pullNumber = (_j = (_h = payload.issue) === null || _h === void 0 ? void 0 : _h.number) !== null && _j !== void 0 ? _j : error("no issue number found in payload");
         const issue = await octokit.pulls.get({
             owner,
             repo,
             pull_number: pullNumber,
         });
         const user = issue.data.user.login;
-        const commentId = (_j = payload.comment) === null || _j === void 0 ? void 0 : _j.id;
-        if (commentId === undefined) {
-            return;
-        }
         const comment = (_k = payload.comment) === null || _k === void 0 ? void 0 : _k.body;
         if (comment === undefined || typeof comment !== "string") {
             return;
@@ -74,7 +81,6 @@ async function run() {
                 page,
                 per_page: 50,
             });
-            console.log(JSON.stringify(workflows.data, null, 4));
             if (workflows.data.workflows.length === 0) {
                 break;
             }
@@ -104,7 +110,6 @@ async function run() {
                 commentId: commentId.toString(),
             },
         });
-        console.log(JSON.stringify(result, null, 4));
         return;
     }
     catch (e) {

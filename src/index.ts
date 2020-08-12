@@ -11,13 +11,10 @@ export async function run() {
     try {
         const payload = github.context.payload
 
-        if (payload.issue?.pull_request === undefined) {
-            core.info("No PR found in event. Ignoring.")
-            return
-        }
-
         const token = core.getInput("pat")
         const octokit = github.getOctokit(token)
+
+        console.log(JSON.stringify(payload, null, 4))
 
         const owner =
             payload.repository?.owner?.login ??
@@ -25,6 +22,22 @@ export async function run() {
         const repo =
             payload.repository?.name ??
             error("no repository name found in payload")
+        const commentId = payload.comment?.id
+        if (commentId === undefined) {
+            return
+        }
+
+        if (payload.issue?.pull_request === undefined) {
+            core.info("No PR found in event. Ignoring.")
+            return
+        }
+
+        await octokit.reactions.createForIssueComment({
+            owner,
+            repo,
+            comment_id: commentId,
+            content: "eyes",
+        })
 
         const pullNumber =
             payload.issue?.number ?? error("no issue number found in payload")
@@ -36,10 +49,6 @@ export async function run() {
         })
 
         const user = issue.data.user.login
-        const commentId = payload.comment?.id
-        if (commentId === undefined) {
-            return
-        }
 
         const comment = payload.comment?.body
         if (comment === undefined || typeof comment !== "string") {
@@ -71,8 +80,6 @@ export async function run() {
                 page,
                 per_page: 50,
             })
-
-            console.log(JSON.stringify(workflows.data, null, 4))
 
             if (workflows.data.workflows.length === 0) {
                 break
@@ -111,8 +118,6 @@ export async function run() {
                 commentId: commentId.toString(),
             },
         })
-
-        console.log(JSON.stringify(result, null, 4))
 
         return
     } catch (e) {
