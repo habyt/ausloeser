@@ -35,8 +35,29 @@ export async function run() {
             pull_number: pullNumber,
         })
 
+        const comment = payload.comment?.body
+        if (comment === undefined || typeof comment !== "string") {
+            return
+        }
+
+        const match = comment.match(/^\/(.+?)(\s|$)/)
+        if (match === null) {
+            console.log("No command found")
+            return
+        }
+
+        const command = match[1]
+
+        const trigger = core.getInput("command", { required: true })
+        if (command !== trigger) {
+            console.log(command + " does not match trigger " + trigger)
+            return
+        }
+
+        const workflowName = core.getInput("workflow", { required: true })
+
         let workflowId: number | undefined = undefined
-        let page = 0
+        let page = 1
         while (true) {
             const workflows = await octokit.actions.listRepoWorkflows({
                 owner,
@@ -52,7 +73,7 @@ export async function run() {
             }
 
             const workflow = workflows.data.workflows.find(
-                (it) => it.path === core.getInput("workflow")
+                (it) => it.name === workflowName
             )
             if (workflow !== undefined) {
                 workflowId = workflow.id

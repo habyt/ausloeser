@@ -11,4 +11,5 @@ jobs:
       - uses: homefully/ausloeser@master
         with:
           pat: ${{ secrets.GITHUB_TOKEN }}
-          workflow: "test2.yml"
+          workflow: "Workflow Dispatch"
+          command: "test"

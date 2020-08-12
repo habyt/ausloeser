@@ -27,7 +27,7 @@ function error(msg) {
     throw new Error(msg);
 }
 async function run() {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
     try {
         const payload = github.context.payload;
         if (((_a = payload.issue) === null || _a === void 0 ? void 0 : _a.pull_request) === undefined) {
@@ -44,8 +44,24 @@ async function run() {
             repo,
             pull_number: pullNumber,
         });
+        const comment = (_j = payload.comment) === null || _j === void 0 ? void 0 : _j.body;
+        if (comment === undefined || typeof comment !== "string") {
+            return;
+        }
+        const match = comment.match(/^\/(.+?)(\s|$)/);
+        if (match === null) {
+            console.log("No command found");
+            return;
+        }
+        const command = match[1];
+        const trigger = core.getInput("command", { required: true });
+        if (command !== trigger) {
+            console.log(command + " does not match trigger " + trigger);
+            return;
+        }
+        const workflowName = core.getInput("workflow", { required: true });
         let workflowId = undefined;
-        let page = 0;
+        let page = 1;
         while (true) {
             const workflows = await octokit.actions.listRepoWorkflows({
                 owner,
@@ -57,7 +73,7 @@ async function run() {
             if (workflows.data.workflows.length === 0) {
                 break;
             }
-            const workflow = workflows.data.workflows.find((it) => it.path === core.getInput("workflow"));
+            const workflow = workflows.data.workflows.find((it) => it.name === workflowName);
             if (workflow !== undefined) {
                 workflowId = workflow.id;
                 break;

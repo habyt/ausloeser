@@ -1,0 +1,16 @@
+name: Workflow Dispatch
+
+on:
+  workflow_dispatch:
+    inputs:
+      comment:
+        default: ""
+      user:
+        default: ""
+
+jobs:
+  test:
+    name: Test
+    steps:
+        - run: echo ${{ github.event.inputs.user }}: ${{ github.event.inputs.comment }}
+
