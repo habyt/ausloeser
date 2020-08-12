@@ -47,5 +47,5 @@ async function main() {
         core.setFailed(e);
     }
 }
-main();
+main().catch((e) => core.setFailed(JSON.stringify(e)));
 //# sourceMappingURL=index.js.map

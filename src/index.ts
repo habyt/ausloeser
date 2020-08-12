@@ -39,4 +39,4 @@ async function main() {
     }
 }
 
-main()
+main().catch((e) => core.setFailed(JSON.stringify(e)))
