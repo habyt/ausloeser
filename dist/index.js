@@ -84,6 +84,7 @@ async function run() {
         const ref = pr.head.ref;
         console.log(ref);
         console.log(workflowId);
+        console.log(workflowName);
         return;
     }
     catch (e) {

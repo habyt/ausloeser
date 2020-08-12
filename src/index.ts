@@ -88,6 +88,7 @@ export async function run() {
 
         console.log(ref)
         console.log(workflowId)
+        console.log(workflowName)
 
         return
     } catch (e) {
