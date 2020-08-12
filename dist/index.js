@@ -19,27 +19,27 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.run = void 0;
+exports.run = exports.error = void 0;
 const core = __importStar(require("@actions/core"));
 const github = __importStar(require("@actions/github"));
 function error(msg) {
     core.setFailed(msg);
     throw new Error(msg);
 }
+exports.error = error;
 async function run() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
     try {
         const payload = github.context.payload;
         const token = core.getInput("pat");
         const octokit = github.getOctokit(token);
-        console.log(JSON.stringify(payload, null, 4));
         const owner = (_c = (_b = (_a = payload.repository) === null || _a === void 0 ? void 0 : _a.owner) === null || _b === void 0 ? void 0 : _b.login) !== null && _c !== void 0 ? _c : error("no repository owner found in payload");
         const repo = (_e = (_d = payload.repository) === null || _d === void 0 ? void 0 : _d.name) !== null && _e !== void 0 ? _e : error("no repository name found in payload");
-        const commentId = (_f = payload.comment) === null || _f === void 0 ? void 0 : _f.id;
+        const commentId = (_g = (_f = payload.comment) === null || _f === void 0 ? void 0 : _f.id) !== null && _g !== void 0 ? _g : (_h = payload.inputs) === null || _h === void 0 ? void 0 : _h.commentId;
         if (commentId === undefined) {
             return;
         }
-        if (((_g = payload.issue) === null || _g === void 0 ? void 0 : _g.pull_request) === undefined) {
+        if (((_j = payload.issue) === null || _j === void 0 ? void 0 : _j.pull_request) === undefined) {
             core.info("No PR found in event. Ignoring.");
             return;
         }
@@ -49,14 +49,14 @@ async function run() {
             comment_id: commentId,
             content: "eyes",
         });
-        const pullNumber = (_j = (_h = payload.issue) === null || _h === void 0 ? void 0 : _h.number) !== null && _j !== void 0 ? _j : error("no issue number found in payload");
+        const pullNumber = (_l = (_k = payload.issue) === null || _k === void 0 ? void 0 : _k.number) !== null && _l !== void 0 ? _l : error("no issue number found in payload");
         const issue = await octokit.pulls.get({
             owner,
             repo,
             pull_number: pullNumber,
         });
         const user = issue.data.user.login;
-        const comment = (_k = payload.comment) === null || _k === void 0 ? void 0 : _k.body;
+        const comment = (_m = payload.comment) === null || _m === void 0 ? void 0 : _m.body;
         if (comment === undefined || typeof comment !== "string") {
             return;
         }

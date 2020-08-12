@@ -1,7 +1,7 @@
 import * as core from "@actions/core"
 import * as github from "@actions/github"
 
-function error(msg: string): never {
+export function error(msg: string): never {
     core.setFailed(msg)
 
     throw new Error(msg)
@@ -14,15 +14,13 @@ export async function run() {
         const token = core.getInput("pat")
         const octokit = github.getOctokit(token)
 
-        console.log(JSON.stringify(payload, null, 4))
-
         const owner =
             payload.repository?.owner?.login ??
             error("no repository owner found in payload")
         const repo =
             payload.repository?.name ??
             error("no repository name found in payload")
-        const commentId = payload.comment?.id
+        const commentId = payload.comment?.id ?? payload.inputs?.commentId
         if (commentId === undefined) {
             return
         }
