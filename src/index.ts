@@ -92,6 +92,9 @@ export async function run() {
         const pr = issue.data
         const ref = pr.head.ref
 
+        console.log(workflowId)
+        console.log(workflowName)
+
         if (workflowId === undefined) {
             console.log("did not find workflow " + workflowName)
             return
