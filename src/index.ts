@@ -16,7 +16,7 @@ export async function run() {
 
         core.info(JSON.stringify(payload, null, 4))
 
-        if (payload.pull_request === undefined) {
+        if (payload.issue?.pull_request === undefined) {
             core.info("hallo2")
             return
         }

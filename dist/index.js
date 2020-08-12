@@ -27,14 +27,14 @@ function error(msg) {
     throw new Error(msg);
 }
 async function run() {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
     try {
         const payload = github.context.payload;
         console.log("hallo");
         core.info("hallo");
         core.debug("hallo");
         core.info(JSON.stringify(payload, null, 4));
-        if (payload.pull_request === undefined) {
+        if (((_a = payload.issue) === null || _a === void 0 ? void 0 : _a.pull_request) === undefined) {
             core.info("hallo2");
             return;
         }
@@ -42,9 +42,9 @@ async function run() {
         const octokit = github.getOctokit(token);
         core.info("hallo3");
         const issue = await octokit.issues.get({
-            owner: (_c = (_b = (_a = payload.repository) === null || _a === void 0 ? void 0 : _a.owner) === null || _b === void 0 ? void 0 : _b.login) !== null && _c !== void 0 ? _c : error("no repository owner found in payload"),
-            repo: (_e = (_d = payload.repository) === null || _d === void 0 ? void 0 : _d.name) !== null && _e !== void 0 ? _e : error("no repository name found in payload"),
-            issue_number: (_g = (_f = payload.issue) === null || _f === void 0 ? void 0 : _f.number) !== null && _g !== void 0 ? _g : error("no issue number found in payload"),
+            owner: (_d = (_c = (_b = payload.repository) === null || _b === void 0 ? void 0 : _b.owner) === null || _c === void 0 ? void 0 : _c.login) !== null && _d !== void 0 ? _d : error("no repository owner found in payload"),
+            repo: (_f = (_e = payload.repository) === null || _e === void 0 ? void 0 : _e.name) !== null && _f !== void 0 ? _f : error("no repository name found in payload"),
+            issue_number: (_h = (_g = payload.issue) === null || _g === void 0 ? void 0 : _g.number) !== null && _h !== void 0 ? _h : error("no issue number found in payload"),
         });
         core.info("hallo4");
         core.info(JSON.stringify(issue, null, 4));
