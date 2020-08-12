@@ -28,10 +28,14 @@ function error(msg) {
 }
 function run() {
     try {
-        if (github.context.payload.pull_request === undefined) {
+        const payload = github.context.payload;
+        console.log("hallo");
+        core.info("hallo");
+        core.debug("hallo");
+        core.info(JSON.stringify(payload, null, 4));
+        if (payload.pull_request === undefined) {
             return;
         }
-        const payload = github.context.payload;
         const token = core.getInput("pat");
         const octokit = github.getOctokit(token);
         //const issue = await octokit.issues.get({
