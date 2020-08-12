@@ -1,5 +1,9 @@
 name: "Auslöser"
 description: "Trigger a workflow_dispatch event for PR comments"
+inputs:
+  pat:
+    description: "Github access token"
+    required: true
 runs:
   using: "node12"
   main: "index.js"

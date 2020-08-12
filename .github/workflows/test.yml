@@ -9,3 +9,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: homefully/ausloeser@master
+        with:
+          pat: ${{ secrets.GITHUB_TOKEN }}
