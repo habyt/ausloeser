@@ -12,5 +12,9 @@ jobs:
   test:
     name: Test
     steps:
-        - run: echo ${{ github.event.inputs.user }}: ${{ github.event.inputs.comment }}
+        - name: Test
+          run: echo $USER: $COMMENT
+          env:
+              USER: ${{ github.event.inputs.user }}
+              COMMENT: ${{ github.event.inputs.comment }}
 
