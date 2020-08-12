@@ -18,11 +18,12 @@ async function main() {
             issue_number: payload.issue.number,
         });
 
-        console.log(JSON.stringify(issue, null, 4));
+        core.info(JSON.stringify(issue, null, 4));
 
-        console.log(payload);
+        core.info(payload);
     } catch (e) {
         core.setFailed(e.message);
+        core.setFailed(e);
     }
 }
 
