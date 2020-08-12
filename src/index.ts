@@ -105,7 +105,7 @@ export async function run() {
             inputs: {
                 comment,
                 user,
-                commentId,
+                commentId: commentId.toString(),
             },
         })
 

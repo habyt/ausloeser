@@ -99,7 +99,7 @@ async function run() {
             inputs: {
                 comment,
                 user,
-                commentId,
+                commentId: commentId.toString(),
             },
         });
         console.log(JSON.stringify(result, null, 4));
