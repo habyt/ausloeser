@@ -1,0 +1,5 @@
+name: "Auslöser"
+description: "Trigger a workflow_dispatch event for PR comments"
+runs:
+  using: "node14"
+  main: "index.js"
