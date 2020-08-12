@@ -27,7 +27,7 @@ function error(msg) {
     throw new Error(msg);
 }
 async function run() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
     try {
         const payload = github.context.payload;
         if (((_a = payload.issue) === null || _a === void 0 ? void 0 : _a.pull_request) === undefined) {
@@ -44,7 +44,12 @@ async function run() {
             repo,
             pull_number: pullNumber,
         });
-        const comment = (_j = payload.comment) === null || _j === void 0 ? void 0 : _j.body;
+        const user = issue.data.user.login;
+        const commentId = (_j = payload.comment) === null || _j === void 0 ? void 0 : _j.id;
+        if (commentId === undefined) {
+            return;
+        }
+        const comment = (_k = payload.comment) === null || _k === void 0 ? void 0 : _k.body;
         if (comment === undefined || typeof comment !== "string") {
             return;
         }
@@ -82,9 +87,22 @@ async function run() {
         }
         const pr = issue.data;
         const ref = pr.head.ref;
-        console.log(ref);
-        console.log(workflowId);
-        console.log(workflowName);
+        if (workflowId === undefined) {
+            console.log("did not find workflow " + workflowName);
+            return;
+        }
+        const result = await octokit.actions.createWorkflowDispatch({
+            owner,
+            repo,
+            workflow_id: workflowId,
+            ref,
+            inputs: {
+                comment,
+                user,
+                commentId,
+            },
+        });
+        console.log(JSON.stringify(result, null, 4));
         return;
     }
     catch (e) {

@@ -35,6 +35,12 @@ export async function run() {
             pull_number: pullNumber,
         })
 
+        const user = issue.data.user.login
+        const commentId = payload.comment?.id
+        if (commentId === undefined) {
+            return
+        }
+
         const comment = payload.comment?.body
         if (comment === undefined || typeof comment !== "string") {
             return
@@ -86,9 +92,24 @@ export async function run() {
         const pr = issue.data
         const ref = pr.head.ref
 
-        console.log(ref)
-        console.log(workflowId)
-        console.log(workflowName)
+        if (workflowId === undefined) {
+            console.log("did not find workflow " + workflowName)
+            return
+        }
+
+        const result = await octokit.actions.createWorkflowDispatch({
+            owner,
+            repo,
+            workflow_id: workflowId,
+            ref,
+            inputs: {
+                comment,
+                user,
+                commentId,
+            },
+        })
+
+        console.log(JSON.stringify(result, null, 4))
 
         return
     } catch (e) {

@@ -7,14 +7,16 @@ on:
         default: ""
       user:
         default: ""
+      commentId:
+        default: ""
 
 jobs:
   test:
     name: Test
     steps:
       - name: Test
-        run: "echo $USER: $COMMENT"
+        run: "echo $USER: $COMMENT $COMMENTID"
         env:
-            USER: ${{ github.event.inputs.user }}
-            COMMENT: ${{ github.event.inputs.comment }}
-
+          USER: ${{ github.event.inputs.user }}
+          COMMENT: ${{ github.event.inputs.comment }}
+          COMMENTID: ${{ github.event.inputs.commentId }}
