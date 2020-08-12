@@ -20,7 +20,6 @@ async function main() {
 
         console.log(JSON.stringify(issue, null, 4));
 
-        const payload = JSON.stringify(github.context.payload, null, 4);
         console.log(payload);
     } catch (e) {
         core.setFailed(e.message);
