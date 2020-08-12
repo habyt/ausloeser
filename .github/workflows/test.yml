@@ -8,5 +8,4 @@ jobs:
     name: Handle Slash Commands
     runs-on: ubuntu-latest
     steps:
-      uses: homefully/ausloeser@master
-
+      - uses: homefully/ausloeser@master
