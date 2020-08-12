@@ -31,5 +31,5 @@ async function main() {
         core_1.default.setFailed(e);
     }
 }
-main().catch((e) => core_1.default.setFailed(e.message));
+main();
 //# sourceMappingURL=index.js.map
