@@ -30,6 +30,7 @@ async function run() {
     var _a, _b, _c, _d, _e, _f, _g;
     try {
         console.log(JSON.stringify(github));
+        core.info(JSON.stringify(github));
         if (github.context.payload.pull_request === undefined) {
             return;
         }

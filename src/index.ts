@@ -10,6 +10,8 @@ function error(msg: string): never {
 export async function run(): Promise<void> {
     try {
         console.log(JSON.stringify(github))
+        core.info(JSON.stringify(github))
+
         if (github.context.payload.pull_request === undefined) {
             return
         }
