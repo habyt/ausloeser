@@ -99,8 +99,8 @@ async function run() {
             workflow_id: workflowId,
             ref,
             inputs: {
-                comment,
-                user,
+                comment: comment.toString(),
+                user: user.toString(),
                 commentId: commentId.toString(),
             },
         });
@@ -109,6 +109,7 @@ async function run() {
     }
     catch (e) {
         core.info("error");
+        core.info(e.toString());
         core.setFailed(e.message);
         core.setFailed(e);
     }
