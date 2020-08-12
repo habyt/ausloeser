@@ -1,4 +1,2 @@
-declare const core: any;
-declare const github: any;
-declare function main(): Promise<void>;
+export {};
 //# sourceMappingURL=index.d.ts.map

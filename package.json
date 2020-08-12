@@ -19,5 +19,8 @@
   "dependencies": {
     "@actions/core": "^1.2.4",
     "@actions/github": "^4.0.0"
+  },
+  "prettier": {
+    "semi": false
   }
 }
