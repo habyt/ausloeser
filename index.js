@@ -1,9 +1,9 @@
-import { setFailed } from "@actions/core";
-import { context } from "@actions/github";
+const core = require("@actions/core");
+const github = require("@actions/github");
 
 try {
-    const payload = JSON.stringify(context.payload, null, 4);
+    const payload = JSON.stringify(github.context.payload, null, 4);
     console.log(payload);
 } catch (e) {
-    setFailed(e.message);
+    core.setFailed(e.message);
 }
